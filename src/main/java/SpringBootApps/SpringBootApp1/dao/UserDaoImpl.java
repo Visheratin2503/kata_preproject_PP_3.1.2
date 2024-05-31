@@ -15,7 +15,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> getUsersList() {
-        return entityManager.createQuery("select u from User u", User.class).getResultList();
+        return entityManager.createQuery("from User", User.class).getResultList();
     }
 
     @Override
@@ -30,9 +30,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void deleteUser(int id) {
-        entityManager.remove(entityManager.find(User.class, id));
+        entityManager.createQuery("delete from User where id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+        //entityManager.remove(entityManager.find(User.class, id));
     }
-
+//использовать createQuery, гарантировать один запрос, delete from user where id = итд, по id. не явные join. через точку!
     @Override
     public void editUser(User user) {
         entityManager.merge(user);
